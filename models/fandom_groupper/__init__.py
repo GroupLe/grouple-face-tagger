@@ -1,0 +1,1 @@
+from groupper import PersonIntersectionGroupper
