@@ -57,14 +57,13 @@ class BertLstm(TransferLearningModel):
             preds = self.lin(word_embs).argmax(dim=2).tolist()[0]
     
         # postprocess
-        wps, labels = self.postprocess(self.tokenizer.tokenize(sent), preds)
+        wps, labels = self._postprocess(self.tokenizer.tokenize(sent), preds)
         names = [wps[i] if '1' in labels[i] else None for i in range(len(wps))]
         names = list(filter(lambda x: x is not None, names))
         
         return names
-        
-    
-    def postprocess(self, wps: list, labels: list):
+
+    def _postprocess(self, wps: list, labels: list):
         """Takes list of BERT wordpieces and list of labels for every wordpeace. Returns list of detected names"""
         labels = labels[1:] + [0]
 
@@ -82,3 +81,4 @@ class BertLstm(TransferLearningModel):
             s += wp
         
         return s.split(), s_labels
+
