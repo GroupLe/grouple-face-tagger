@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from transformers import BertTokenizer, BertModel
+import sklearn
 
 BERT = 'DeepPavlov/rubert-base-cased-conversational'
     
@@ -38,8 +39,9 @@ class BertLstm(TransferLearningModel):
         self.device_param = nn.Parameter(torch.empty(0))
     
     def forward(self, x):
+        assert isinstance(x, torch.Tensor), 'string'
         with torch.no_grad():
-            word_embs, sent_emb = self.bert(x)
+            word_embs = self.bert(x)['last_hidden_state']
         n_words = word_embs.size(1)
         word_embs = word_embs.view(n_words, -1)
         pred = self.lin(word_embs)
@@ -81,4 +83,3 @@ class BertLstm(TransferLearningModel):
             s += wp
         
         return s.split(), s_labels
-
