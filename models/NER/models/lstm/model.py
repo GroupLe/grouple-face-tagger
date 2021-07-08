@@ -1,10 +1,13 @@
 import torch
 import torch.nn as nn
+import os
 
 
-class LSTM_fixed_len(nn.Module):
-    def __init__(self, vocab_size=33, embedding_dim=16, hidden_dim=128):
+class LSTMFixedLen(nn.Module):
+    def __init__(self, vocab_size=33, embedding_dim=16, hidden_dim=128, max_len=14):
         super().__init__()
+
+        self.max_len = max_len
 
         self.embeddings = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
 
@@ -24,7 +27,7 @@ class LSTM_fixed_len(nn.Module):
 
         self.fc = nn.Linear(32, 2)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
 
         x = self.embeddings(x)
 
@@ -41,7 +44,16 @@ class LSTM_fixed_len(nn.Module):
 
         return y
 
-    def encode(self, word, max_len=14):
+    def encode(self, word: str) -> torch.Tensor:
+        """Encode token with russian dictionary
+
+        Parameters:
+            word: word to encode
+
+        Returns:
+            Encoded with russian dictionary word
+
+        """
         cur_word = []
         a = ord('а')
         chars = [chr(i) for i in range(a, a + 32)]
@@ -49,15 +61,23 @@ class LSTM_fixed_len(nn.Module):
         rus_dict = dict(zip(chars, nums))
         for i in word.lower():
             cur_word.append(rus_dict[i])
-        while len(cur_word) < max_len:
+        while len(cur_word) < self.max_len:
             cur_word.append(1)
         return torch.tensor(cur_word)
 
-    def prediction(self, word):
+    def prediction(self, word: str) -> torch.Tensor:
         encoded = self.encode(word)
         encoded = torch.reshape(encoded, (1, 14))
         probability = self.forward(encoded)
         return probability
 
-    def save(self, path):
+    def save(self, path: str):
         torch.save(self.state_dict(), path)
+
+    @staticmethod
+    def load(model_path: str):
+        path = os.path.abspath(model_path)
+        model = LSTMFixedLen()
+        model.load_state_dict(torch.load(path))
+        model.eval()
+        return model

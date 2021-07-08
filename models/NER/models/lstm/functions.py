@@ -3,7 +3,7 @@ import torch.nn as nn
 from sklearn.metrics import precision_recall_curve
 
 
-def create_ris_dict():
+def create_ris_dict() -> dict:
     a = ord('а')
     chars = [chr(i) for i in range(a, a + 32)]
     nums = [i + 1 for i in range(0, 33)]
@@ -11,7 +11,17 @@ def create_ris_dict():
     return rus_dict
 
 
-def encode(word, max_len):
+def encode(word: list, max_len: int) -> list:
+    """Encode tokens with russian dictionary
+
+    Parameters:
+        word: word to encode
+        max_len: maximum length of the word in the whole corpus
+
+    Returns:
+         Encoded with russian dictionary word
+
+    """
     cur_word = []
     rus_dict = create_ris_dict()
     for i in word:
@@ -21,11 +31,11 @@ def encode(word, max_len):
     return cur_word
 
 
-def f_score(preds, labels):
+def f_score(preds: list, labels: list) -> float:
     sigmoid = nn.Sigmoid()
     assert all(map(lambda preds: preds.size(1) == 2, preds))
-    def to_probs(preds): sigmoid(preds)[:, 0].cpu().detach().numpy()
-    def to_labels(labels): (1 - labels).cpu().detach().numpy()
+    to_probs = lambda preds: sigmoid(preds)[:, 0].cpu().detach().numpy()
+    to_labels = lambda labels: (1 - labels).cpu().detach().numpy()
 
     preds = list(map(to_probs, preds))
     labels = list(map(to_labels, labels))
