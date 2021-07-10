@@ -4,9 +4,9 @@ from light_anime_face_detector.model import LFFDDetector
 
 
 class AnimeFaceDetectionModel:
-    def __init__(self, margin=0, config_path='./light_anime_face_detector/configs/anime_module.json'):
+    def __init__(self, module_path, margin=0, config_path='./light_anime_face_detector/configs/anime_module.json'):
         config = json.load(open(config_path))
-        self.detector = LFFDDetector(config, use_gpu=False)
+        self.detector = LFFDDetector(module_path, config, use_gpu=False)
         self.margin = margin
         
     def detect(self, image):

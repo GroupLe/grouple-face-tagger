@@ -10,7 +10,7 @@ class TokensDataset(Dataset):
         self.y = Y
 
     @staticmethod
-    def encode_x(x):
+    def encode_x(x: list) -> list:
         max_len = len(max(x, key=lambda i: len(i)))
         encoded = []
         for i in x:
@@ -18,7 +18,7 @@ class TokensDataset(Dataset):
         return encoded
 
     @staticmethod
-    def collate_fn(objs):
+    def collate_fn(objs: list) -> (torch.LongTensor, torch.Tensor):
         data = ([i[0] for i in objs])
         labels = ([i[1] for i in objs])
         data = torch.LongTensor(data)
