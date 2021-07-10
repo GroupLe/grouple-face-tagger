@@ -1,0 +1,1 @@
+from .model.detector import LFFDDetector
