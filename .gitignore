@@ -92,3 +92,6 @@ target/
 
 # tensorboard logs
 runs/
+
+# data
+data/
