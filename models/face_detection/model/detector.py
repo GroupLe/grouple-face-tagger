@@ -7,11 +7,11 @@ from .types import Image
 
 
 class BoundBox:
-    def __init__(self, xmin: int, ymin, xmax, ymax, confidence=0):
-        self.xmin = xmin
-        self.ymin = ymin
-        self.xmax = xmax
-        self.ymax = ymax
+    def __init__(self, xmin: float, ymin, xmax, ymax, confidence=0):
+        self.xmin = round(xmin)
+        self.ymin = round(ymin)
+        self.xmax = round(xmax)
+        self.ymax = round(ymax)
         self.confidence = confidence
 
     def unpack(self):

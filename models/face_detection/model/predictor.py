@@ -60,6 +60,12 @@ def nms(boxes, overlap_threshold):
     return boxes[pick]
 
 
+class DataBatch:
+    """MXnet butch adapter"""
+    def __init__(self, data: list):
+        self.data = data
+
+
 class LFFDPredictor(object):
 
     def __init__(self,
@@ -135,7 +141,7 @@ class LFFDPredictor(object):
         input_image = input_image[:, :, :, numpy.newaxis]
         input_image = input_image.transpose([3, 2, 0, 1])
 
-        data_batch = [self.mxnet.ndarray.array(input_image, self.ctx)]
+        data_batch = DataBatch([self.mxnet.ndarray.array(input_image, self.ctx)])
         
         tic = time.time()
         self.module.forward(data_batch=data_batch, is_train=False)

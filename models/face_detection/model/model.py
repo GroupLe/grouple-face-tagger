@@ -1,7 +1,7 @@
 from typing import List
 import json
 from loguru import logger
-from .detector import LFFDDetector
+from .detector import LFFDDetector, BoundBox
 from .types import Image
 
 
@@ -24,12 +24,13 @@ class AnimeFaceDetectionModel:
         faces = list(map(fetch_face, bboxes))
         return faces
 
-    def _fetch_box(self, img: Image, bbox: dict) -> Image:
+    def _fetch_box(self, img: Image, bbox: BoundBox) -> Image:
         """Enlarges boundbox with margin pixels, crops bounded image"""
         h, w, _ = img.shape
-        byx = max(0, bbox['xmin'] - self.margin)
-        tox = min(w, bbox['xmax'] + self.margin)
-        byy = max(0, bbox['ymin'] - self.margin)
-        toy = min(h, bbox['ymax'] + self.margin)
+        byx = max(0, bbox.xmin - self.margin)
+        tox = min(w, bbox.xmax + self.margin)
+        byy = max(0, bbox.ymin - self.margin)
+        toy = min(h, bbox.ymax + self.margin)
+        print(byy,toy, byx,tox)
         crop = img[byy:toy, byx:tox, :]
         return crop
