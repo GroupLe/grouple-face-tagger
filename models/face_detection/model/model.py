@@ -31,6 +31,5 @@ class AnimeFaceDetectionModel:
         tox = min(w, bbox.xmax + self.margin)
         byy = max(0, bbox.ymin - self.margin)
         toy = min(h, bbox.ymax + self.margin)
-        print(byy,toy, byx,tox)
         crop = img[byy:toy, byx:tox, :]
         return crop
