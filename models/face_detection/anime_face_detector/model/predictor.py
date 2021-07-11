@@ -1,23 +1,14 @@
-# coding: utf-8
-"""
-    Modified version of the predictor from LFFD repository.
-"""
-
-import sys
-import os
 import numpy
 import cv2
 import time
 
-class DataBatch:
-    pass
 
-def NMS(boxes, overlap_threshold):
-    '''
+def nms(boxes, overlap_threshold):
+    """
     :param boxes: numpy nx5, n is the number of boxes, 0:4->x1, y1, x2, y2, 4->score
     :param overlap_threshold:
     :return:
-    '''
+    """
     if boxes.shape[0] == 0:
         return boxes
 
@@ -68,6 +59,13 @@ def NMS(boxes, overlap_threshold):
     # integer data type
     return boxes[pick]
 
+
+class DataBatch:
+    """MXnet butch adapter"""
+    def __init__(self, data: list):
+        self.data = data
+
+
 class LFFDPredictor(object):
 
     def __init__(self,
@@ -99,8 +97,6 @@ class LFFDPredictor(object):
         self.__load_model()
 
     def __load_model(self):
-        print(f"{time.ctime()}: Initializing.")
-        start = time.time()
         self.symbol_net = self.mxnet.symbol.load(str(self.symbol_file_path))
         data_name = 'data'
         data_name_shape = (data_name, (1, 3, self.input_height, self.input_width))
@@ -125,9 +121,8 @@ class LFFDPredictor(object):
         self.module.init_params(arg_params=self.arg_name_arrays,
                                 aux_params=self.aux_name_arrays,
                                 allow_missing=True)
-        print(f"{time.ctime()}: Initialized ({time.time() - start:.4f} seconds).")
 
-    def predict(self, image, resize_scale=1, score_threshold=0.8, top_k=100, NMS_threshold=0.3, NMS_flag=True, skip_scale_branch_list=[]):
+    def predict(self, image, resize_scale=1, score_threshold=0.8, top_k=100, nms_threshold=0.3, nms_flag=True, skip_scale_branch_list=[]):
         if image.ndim != 3 or image.shape[2] != 3:
             return None
 
@@ -146,8 +141,7 @@ class LFFDPredictor(object):
         input_image = input_image[:, :, :, numpy.newaxis]
         input_image = input_image.transpose([3, 2, 0, 1])
 
-        data_batch = DataBatch()
-        data_batch.data = [self.mxnet.ndarray.array(input_image, self.ctx)]
+        data_batch = DataBatch([self.mxnet.ndarray.array(input_image, self.ctx)])
         
         tic = time.time()
         self.module.forward(data_batch=data_batch, is_train=False)
@@ -192,17 +186,17 @@ class LFFDPredictor(object):
                                         y_rb_mat[select_index[0][idx], select_index[1][idx]],
                                         score_map[select_index[0][idx], select_index[1][idx]]))
 
-        # NMS
+        # nms
         bbox_collection = sorted(bbox_collection, key=lambda item: item[-1], reverse=True)
         if len(bbox_collection) > top_k:
             bbox_collection = bbox_collection[0:top_k]
         bbox_collection_numpy = numpy.array(bbox_collection, dtype=numpy.float32)
 
-        if NMS_flag:
-            final_bboxes = NMS(bbox_collection_numpy, NMS_threshold)
+        if nms_flag:
+            final_bboxes = nms(bbox_collection_numpy, nms_threshold)
             final_bboxes_ = []
             for i in range(final_bboxes.shape[0]):
-                final_bboxes_.append((final_bboxes[i, 0], final_bboxes[i, 1], final_bboxes[i, 2], final_bboxes[i, 3], final_bboxes[i, 4]))
+                final_bboxes_.append(final_bboxes[i, :5])
             return final_bboxes_, infer_time
         else:
             return bbox_collection_numpy, infer_time
