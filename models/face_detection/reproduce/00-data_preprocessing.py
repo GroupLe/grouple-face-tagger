@@ -7,19 +7,19 @@ import regex as re
 import numpy as np
 from grouple.models.face_detection.model import AnimeFaceDetectionModel
 
-def walkdir(folder):
+def walkdir(folder: Path):
     """Walk through every files in a directory"""
     for dirpath, dirs, files in os.walk(folder):
         for filename in files:
             yield str(os.path.abspath(os.path.join(dirpath, filename)))
 
 
-class FacePreprocessing:
+class FacePreprocess:
 
-    def __init__(self, target_root):
+    def __init__(self, target_root: Path):
         self.target_root = target_root
 
-    def get_target_path_waifus(self, filepath):
+    def get_target_path_waifus(self, filepath: Path):
         filename = Path(filepath).parts[-1]
         name = filename.replace(' ', '_')
         filename = filename.replace(' ', '_')
@@ -27,19 +27,26 @@ class FacePreprocessing:
 
         return name, filename
 
-    def get_target_path_moeimouto(self, filepath):
+    def get_target_path_moeimouto(self, filepath: Path):
         filename = Path(filepath).parts[-1]
         name = Path(filepath).parts[-2]
         name = re.sub(r"[^A-za-z]", "", name)
 
         return name[1:], filename
 
+    @staticmethod
+    def is_correct_file(filepath: Path):
+        return not (filepath.endswith('.png') or (filepath.endswith('.jpg')))
+
+    @staticmethod
+    def is_correct_image(image: np.ndarray):
+        return len(np.shape(image)) != 4 or len(image) != 1
 
     def save_face(self, filepath: list):
 
         image = cv2.imread(filepath)
 
-        if not (isinstance(image, np.ndarray)) or not (filepath.endswith('.png') or (filepath.endswith('.jpg'))):
+        if not (isinstance(image, np.ndarray)) or self.is_correct_file(filepath):
             os.remove(filepath)
             return
 
@@ -47,7 +54,7 @@ class FacePreprocessing:
             os.remove(filepath)
             return
 
-        model = AnimeFaceDetectionModel(margin=10) #not working other way
+        model = AnimeFaceDetectionModel(margin=10) #impossible to move the loading of the model outside the method
         face = model.detect(image)
 
         try:
@@ -55,7 +62,7 @@ class FacePreprocessing:
         except ValueError as ve:
             return
 
-        if face.size == 0 or len(np.shape(face)) != 4 or len(face) != 1:
+        if face.size == 0 or self.is_correct_image(face):
             return
 
         if 'waifus' in Path(filepath).parts:
@@ -80,13 +87,14 @@ if __name__ == '__main__':
     root = Path('../../../data/face_detection/raw/')
     waifus = root / 'waifus'
     moeimouto = root / 'moeimouto-faces'
-    target_root = 'C:/may/ML/GroupLe/grouple/data/face_detection/processed/'
+    target_root = Path('C:/may/ML/GroupLe/grouple/data/face_detection/processed/')
 
-    face_processing = FacePreprocessing(target_root)
+    face_processing = FacePreprocess(target_root)
 
     files1 = list(walkdir(waifus))
     files2 = list(walkdir(moeimouto))
 
-    with Pool(processes=5) as pool:
+    processes = 5
+    with Pool(processes) as pool:
         res1 = list(tqdm(pool.imap(face_processing.save_face, files1), total=len(files1)))
         res2 = list(tqdm(pool.imap(face_processing.save_face, files2), total=len(files2)))
