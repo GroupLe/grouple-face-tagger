@@ -6,6 +6,7 @@ import torch
 from tqdm import tqdm
 import random
 import cv2
+from typing import List, Tuple, Any
 
 
 class SiamseDatasetPath(Dataset):
@@ -30,7 +31,7 @@ class SiamseDatasetPath(Dataset):
         image = cv2.imread(path)
         return image
 
-    def make_triplets_dataset(self) -> list:
+    def make_triplets_dataset(self) -> List[List]:
         anchor_paths = []
         positive_paths = []
         negative_paths = []
@@ -69,7 +70,8 @@ class SiamseDatasetPics(Dataset):
         image = cv2.imread(path)
         return image
 
-    def make_triplets_dataset(self) -> list:
+    def make_triplets_dataset(self) -> List[Tuple[Any]]:
+
         anchor_images = []
         positive_images = []
         negative_images = []

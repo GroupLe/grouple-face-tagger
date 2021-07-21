@@ -7,7 +7,7 @@ import regex as re
 import numpy as np
 from grouple.models.face_detection.model import AnimeFaceDetectionModel
 
-def walkdir(folder: Path):
+def walkdir(folder: Path) -> str:
     """Walk through every files in a directory"""
     for dirpath, dirs, files in os.walk(folder):
         for filename in files:
@@ -19,7 +19,7 @@ class FacePreprocess:
     def __init__(self, target_root: Path):
         self.target_root = target_root
 
-    def get_target_path_waifus(self, filepath: Path):
+    def get_target_path_waifus(self, filepath: Path) -> (str, str):
         filename = Path(filepath).parts[-1]
         name = filename.replace(' ', '_')
         filename = filename.replace(' ', '_')
@@ -27,7 +27,7 @@ class FacePreprocess:
 
         return name, filename
 
-    def get_target_path_moeimouto(self, filepath: Path):
+    def get_target_path_moeimouto(self, filepath: Path) -> (str, str):
         filename = Path(filepath).parts[-1]
         name = Path(filepath).parts[-2]
         name = re.sub(r"[^A-za-z]", "", name)
@@ -35,14 +35,14 @@ class FacePreprocess:
         return name[1:], filename
 
     @staticmethod
-    def is_correct_file(filepath: Path):
+    def is_correct_file(filepath: Path) -> bool:
         return not (filepath.endswith('.png') or (filepath.endswith('.jpg')))
 
     @staticmethod
-    def is_correct_image(image: np.ndarray):
+    def is_correct_image(image: np.ndarray) -> bool:
         return len(np.shape(image)) != 4 or len(image) != 1
 
-    def save_face(self, filepath: list):
+    def save_face(self, filepath: list[str]) -> _:
 
         image = cv2.imread(filepath)
 
@@ -59,7 +59,7 @@ class FacePreprocess:
 
         try:
             face = np.array(face)
-        except ValueError as ve:
+        except ValueError:
             return
 
         if face.size == 0 or self.is_correct_image(face):
