@@ -92,6 +92,7 @@ target/
 
 # tensorboard logs
 runs/
+wandb/
 
 # data
 data/
