@@ -79,7 +79,7 @@ class FacePreprocess:
         target_path = self.target_root + '/' + name + '/' + filename
         os.remove(filepath)
 
-
+        cv2.imwrite(target_path, face[0])
 
 
 if __name__ == '__main__':
