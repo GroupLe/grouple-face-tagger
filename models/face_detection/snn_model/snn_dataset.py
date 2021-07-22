@@ -31,7 +31,7 @@ class SiamseDatasetPath(Dataset):
         image = cv2.imread(path)
         return image
 
-    def make_triplets_dataset(self) -> List[List]:
+    def make_triplets_dataset(self) -> List[Tuple[Path, Path, Path]]:
         anchor_paths = []
         positive_paths = []
         negative_paths = []
@@ -70,7 +70,7 @@ class SiamseDatasetPics(Dataset):
         image = cv2.imread(path)
         return image
 
-    def make_triplets_dataset(self) -> List[Tuple[Any]]:
+    def make_triplets_dataset(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray]]:
 
         anchor_images = []
         positive_images = []
