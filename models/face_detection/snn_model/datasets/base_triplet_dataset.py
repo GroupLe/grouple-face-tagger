@@ -6,6 +6,7 @@ from tqdm import tqdm
 import numpy as np
 import cv2
 import torch
+from multiprocessing import Pool
 from torch.utils.data import Dataset
 
 
@@ -18,9 +19,10 @@ class BaseTripletDataset(Dataset):
     def __len__(self):
         return len(self.triplets)
 
-    def _make_class_triplets(self, data_path: Path, pos_folder: Path) -> List[Tuple[Any, Any, Any]]:
+    def _make_class_triplets(self, pos_folder: Path) -> List[Tuple[Any, Any, Any]]:
         """Makes triplets for given class (=folder with one class pics)"""
         triplets = []
+        data_path = self.data_path
 
         for pos_file in os.listdir(data_path / pos_folder):
             path_anc = data_path / pos_folder / pos_file
@@ -44,14 +46,15 @@ class BaseTripletDataset(Dataset):
         return triplets
 
     def _make_triplets_dataset(self, data_path: Path) -> List[Tuple[Any, Any, Any]]:
-        triplets = []
         random.seed(2021)
 
-        for class_folder in tqdm(os.listdir(data_path)):
-            folder_triples = self._make_class_triplets(data_path, class_folder)
-            triplets += folder_triples
+        files = os.listdir(data_path)
 
-        return triplets
+        processes = 5
+        with Pool(processes) as pool:
+            triplet_dataset = list(tqdm(pool.imap(self._make_class_triplets, files)))
+
+        return triplet_dataset
 
     @staticmethod
     def _load_image(path: Path) -> np.ndarray:
@@ -64,3 +67,4 @@ class BaseTripletDataset(Dataset):
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         raise NotImplementedError
+

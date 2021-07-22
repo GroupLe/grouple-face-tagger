@@ -11,7 +11,7 @@ def walkdir(folder: Path) -> str:
     """Walk through every files in a directory"""
     for dirpath, dirs, files in os.walk(folder):
         for filename in files:
-            yield str(os.path.abspath(os.path.join(dirpath, filename)))
+            yield Path(os.path.abspath(os.path.join(dirpath, filename)))
 
 
 class FacePreprocess:
