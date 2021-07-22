@@ -2,8 +2,9 @@ import torch
 import torch.nn as nn
 
 
-def accuracy(anchor: torch.Tensor, positive: torch.Tensor, negative: torch.Tensor, batch_size: int) -> float:
+def accuracy(anchor: torch.Tensor, positive: torch.Tensor, negative: torch.Tensor) -> float:
     total_correct = 0
+    batch_size = anchor.size(0)
     cos = nn.CosineSimilarity()
     a_p = cos(anchor, positive)
     a_n = cos(anchor, negative)
