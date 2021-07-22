@@ -6,36 +6,28 @@ class EmbeddingNet(nn.Module):
     def __init__(self):
         super(EmbeddingNet, self).__init__()
 
-        self.conv_block1 = nn.Sequential(nn.Conv2d(in_channels=3, out_channels=9, kernel_size=3),
-                                         nn.ReLU(),
+        self.conv_block = nn.Sequential(self.make_conv_block(3, 32),
+                                        self.make_conv_block(32, 64),
+                                        self.make_conv_block(64, 128, 5),
+                                        self.make_conv_block(128, 256),
+                                        self.make_conv_block(256, 256))
 
-                                         nn.Conv2d(in_channels=9, out_channels=15, kernel_size=3),
-                                         nn.ReLU(),
-                                         nn.MaxPool2d(2, stride=2))
-
-        self.conv_block2 = nn.Sequential(nn.Conv2d(in_channels=15, out_channels=18, kernel_size=5),
-                                         nn.ReLU(),
-
-                                         nn.Conv2d(in_channels=18, out_channels=27, kernel_size=5),
-                                         nn.ReLU(),
-                                         nn.MaxPool2d(2, stride=2),
-
-                                         nn.Conv2d(in_channels=27, out_channels=33, kernel_size=17),
-                                         nn.ReLU(),
-                                         nn.MaxPool2d(2, stride=2))
-
-        self.fc = nn.Sequential(nn.Linear(825, 768),
-                                nn.ReLU(),
-                                nn.Linear(768, 512),
-                                nn.ReLU(),
-                                nn.Linear(512, 256)
+        self.fc = nn.Sequential(nn.Linear(256, 128),
+                                nn.Tanh(),
+                                nn.Linear(128, 64)
                                 )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        output = self.conv_block1(x)
-        output = self.conv_block2(output)
+    @staticmethod
+    def make_conv_block(in_channels, out_channels, kernel_size=3) -> nn.Sequential:
+        return nn.Sequential(nn.Conv2d(in_channels, out_channels, kernel_size),
+                             nn.BatchNorm2d(out_channels),
+                             nn.Tanh(),
+                             nn.MaxPool2d(2, stride=2))
 
-        output = output.view(output.size()[0], -1)
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        output = self.conv_block(x)
+
+        output = output.squeeze()
         output = self.fc(output)
         return output
 
