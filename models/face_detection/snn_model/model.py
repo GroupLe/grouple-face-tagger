@@ -1,5 +1,10 @@
 import torch.nn as nn
 import torch
+import PIL
+from typing import List
+from operator import itemgetter
+import torchvision
+import torchvision.transforms as T
 
 
 class EmbeddingNet(nn.Module):
@@ -48,3 +53,20 @@ class TripletNet(nn.Module):
 
     def get_embedding(self, x: torch.Tensor) -> torch.Tensor:
         return self.embedding_net(x)
+
+    def get_similars(self, target_pic: PIL.Image.Image, pics_pool: List[PIL.Image.Image]) -> List[int]:
+        composed = torchvision.transforms.Compose([T.ToTensor(),
+                                                   T.Resize((128, 128))])
+        target_pic = composed(target_pic)
+        target_emb = self.get_embedding(target_pic.unsqueeze(0))
+        cos = nn.CosineSimilarity()
+        pics_similarity = []
+        for pic in pics_pool:
+            pic_emb = self.get_embedding(composed(pic).unsqueeze(0))
+            cosine = cos(target_emb.unsqueeze(0), pic_emb.unsqueeze(0))
+            pics_similarity.append((cosine, pic))
+        pool = sorted(pics_similarity, key=itemgetter(0), reverse=True)
+        pics = []
+        for i in pool:
+            pics.append(i[1])
+        return pics

@@ -52,7 +52,11 @@ class BaseTripletDataset(Dataset):
 
         processes = 5
         with Pool(processes) as pool:
-            triplet_dataset = list(tqdm(pool.imap(self._make_class_triplets, files)))
+            triplet_dataset_colomn = list(tqdm(pool.imap(self._make_class_triplets, files)))
+
+        triplet_dataset = []
+        for i in triplet_dataset_colomn:
+            triplet_dataset+=i
 
         return triplet_dataset
 
@@ -67,4 +71,3 @@ class BaseTripletDataset(Dataset):
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         raise NotImplementedError
-
