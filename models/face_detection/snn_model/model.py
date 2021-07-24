@@ -5,7 +5,9 @@ from typing import List
 from operator import itemgetter
 import torchvision
 import torchvision.transforms as T
-
+from multiprocessing import Pool
+from tqdm import tqdm
+from .functions import DistanceCounter
 
 class EmbeddingNet(nn.Module):
     def __init__(self):
@@ -54,18 +56,32 @@ class TripletNet(nn.Module):
     def get_embedding(self, x: torch.Tensor) -> torch.Tensor:
         return self.embedding_net(x)
 
+    def get_embedding_predict(self, x: torch.Tensor) -> torch.Tensor:
+        x = x.unsqueeze(0)
+        return self.embedding_net(x).detach()
+
     def get_similars(self, target_pic: PIL.Image.Image, pics_pool: List[PIL.Image.Image]) -> List[int]:
+
         composed = torchvision.transforms.Compose([T.ToTensor(),
                                                    T.Resize((128, 128))])
-        target_pic = composed(target_pic)
-        target_emb = self.get_embedding(target_pic.unsqueeze(0))
         cos = nn.CosineSimilarity()
-        pics_similarity = []
-        for pic in pics_pool:
-            pic_emb = self.get_embedding(composed(pic).unsqueeze(0))
-            cosine = cos(target_emb.unsqueeze(0), pic_emb.unsqueeze(0))
-            pics_similarity.append((cosine, pic))
-        pool = sorted(pics_similarity, key=itemgetter(0), reverse=True)
+        target_pic = composed(target_pic)
+
+        target_emb = self.get_embedding(target_pic.unsqueeze(0))
+
+        distance_counter = DistanceCounter(target_emb, cos)
+
+        pics_pool = list(map(composed, pics_pool))
+
+        processes = 5
+        with Pool(processes) as pool:
+            pics_emb_pool = list(tqdm(pool.imap(self.get_embedding_predict, pics_pool)))
+            pics_similarity = list(tqdm(pool.imap(distance_counter.count_distance, pics_emb_pool)))
+
+        pics_similarity_pairs = []
+        for i in range(len(pics_similarity)):
+            pics_similarity_pairs.append((pics_similarity[i], i))
+        pool = sorted(pics_similarity_pairs, key=itemgetter(0), reverse=True)
         pics = []
         for i in pool:
             pics.append(i[1])
