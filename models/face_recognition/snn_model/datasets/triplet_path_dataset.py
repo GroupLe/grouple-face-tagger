@@ -11,5 +11,8 @@ class TripletPathDataset(BaseTripletDataset):
         return triplet_pathes
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        make_pic = lambda path: self.transform(path)
-        return list(map(make_pic, self.triplets[idx]))
+        triplet = self.triplets[idx]
+        transformed_triplet = []
+        for i in triplet:
+            transformed_triplet.append(self.transform(self._load_image(i)))
+        return transformed_triplet
