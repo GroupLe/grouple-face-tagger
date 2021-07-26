@@ -5,13 +5,14 @@ import os
 import cv2
 import regex as re
 import numpy as np
+from typing import List
 from grouple.models.face_detection.model import AnimeFaceDetectionModel
 
 def walkdir(folder: Path) -> str:
     """Walk through every files in a directory"""
     for dirpath, dirs, files in os.walk(folder):
         for filename in files:
-            yield Path(os.path.abspath(os.path.join(dirpath, filename)))
+            yield os.path.abspath(os.path.join(dirpath, filename))
 
 
 class FacePreprocess:
@@ -42,7 +43,7 @@ class FacePreprocess:
     def is_correct_image(image: np.ndarray) -> bool:
         return len(np.shape(image)) != 4 or len(image) != 1
 
-    def save_face(self, filepath: list[str]) -> _:
+    def save_face(self, filepath: List[str]):
 
         image = cv2.imread(filepath)
 
@@ -54,7 +55,7 @@ class FacePreprocess:
             os.remove(filepath)
             return
 
-        model = AnimeFaceDetectionModel(margin=10) #impossible to move the loading of the model outside the method
+        model = AnimeFaceDetectionModel(margin=10) #impossible to move loading of the model outside the method
         face = model.detect(image)
 
         try:
