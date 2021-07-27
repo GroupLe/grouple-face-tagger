@@ -34,7 +34,7 @@ class ParseFaces:
 
 if __name__ == '__main__':
 
-    path = Path('../../../data/face_detection/raw/characters/you_anime_characters_refs.csv/')
+    path = Path('../../../data/face_detection/raw/characters/you_anime_characters_refs.csv')
     df = pd.read_csv(path, sep='\t')
     df = df.drop_duplicates(subset='img_addr')
     main_url = df.page_link[0][:20]
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     target_root = Path('../../../data/face_detection/anime_characters/')
     data = df.values.tolist()
     parse_face = ParseFaces(target_root=target_root, main_url=main_url)
-    print(data[0])
+
     processes = 5
     with Pool(processes) as pool:
         res1 = list(tqdm(pool.imap(parse_face.parse_faces, data), total=len(data)))
