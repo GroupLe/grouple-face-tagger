@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import os
+from typing import List
 
 
 class LSTMFixedLen(nn.Module):
@@ -71,11 +72,11 @@ class LSTMFixedLen(nn.Module):
         probability = self.forward(encoded)
         return probability
 
-    def is_name_entity(self, word):
+    def is_name_entity(self, word: str) -> bool:
         pred = self.prediction(word)
         return True if pred[0][0] > pred[0][1] else False
 
-    def get_names(self, string):
+    def extract_names(self, string: str) -> List[str]:
         names = []
         string = string.split(' ')
         for word in string:
