@@ -1,5 +1,6 @@
 import sys
 import os
+import pandas as pd
 sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from parqser.scrapper import BatchParallelScrapper
 from parqser.parser import HTMLParser
@@ -30,3 +31,6 @@ if __name__ == '__main__':
         parsed = [page.to_dict() for page in parsed]
         saver.save_batch(parsed)
         crawler.wait()
+    df = pd.read_
+
+
