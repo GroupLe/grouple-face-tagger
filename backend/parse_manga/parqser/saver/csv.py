@@ -41,7 +41,7 @@ class CSVSaver(BaseSaver):
         if len(params) == 0:
             raise AttributeError('Records batch shouldnt be empty')
 
-        with open(self.path, 'a') as f:
+        with open(self.path, 'a', encoding='utf-8') as f:
             writer = csv.writer(f, delimiter=self.sep, quotechar='"')
             if self.columns is None:
                 # use first record columns as header
