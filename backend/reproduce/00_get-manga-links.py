@@ -1,9 +1,9 @@
 import pandas as pd
 import regex as re
-from typing import List
+from typing import List, Tuple
 
 
-def get_links(df: pd.DataFrame) -> (List[str], List[str]):
+def get_links(df: pd.DataFrame) -> Tuple[List[str], List[str]]:
     titles = []
     links = []
     for i in df.iterrows():
@@ -20,13 +20,14 @@ def get_links(df: pd.DataFrame) -> (List[str], List[str]):
                 cur_string = ' '.join(obj)
                 cur_string = cur_string.replace(" ", "")
                 items = cur_string.split(',')
-                if len(items) >= 5:
-                    for item in items:
-                        if re.search('^(\'https:\/\/static.readmanga).*', item) != None:
-                            title = items[4].replace("'", "")
-                            titles.append(title)
-                            link = 'https://readmanga.live/' + title
-                            links.append(link)
+                if len(items) < 5:
+                    continue
+                for item in items:
+                    if re.search('^(\'https:\/\/static.readmanga).*', item) != None:
+                        title = items[4].replace("'", "")
+                        titles.append(title)
+                        link = 'https://readmanga.live/' + title
+                        links.append(link)
                 obj = []
 
     return titles, links

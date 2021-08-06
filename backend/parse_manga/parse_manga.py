@@ -3,7 +3,7 @@ sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 import pandas as pd
 from tqdm import tqdm
 from parqser.scrapper import BatchParallelScrapper
-from parqser.parser import HTMLParser
+from parqser.parser_ import HTMLParser
 from parqser.saver import CSVSaver
 import web_components.volumes as web_components
 from grouple_session import GroupleSession
