@@ -2,7 +2,7 @@ from typing import List
 from parqser.web_component import BaseComponent
 
 
-class Volumes(BaseComponent):
+class Pics(BaseComponent):
 
     def parse(self, page_str: str) -> List[str]:
 

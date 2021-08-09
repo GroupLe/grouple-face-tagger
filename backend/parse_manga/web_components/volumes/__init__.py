@@ -1,2 +1,2 @@
-from .volumes import Volumes
+from .pics import Pics
 from .comments_page import CommentsPage
