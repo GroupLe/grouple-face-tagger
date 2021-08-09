@@ -12,14 +12,17 @@ class CommentsPage(BaseComponent):
 
         divs = etree.xpath("//div[contains(@class, 'hide')]")
         for div in divs:
-            if len(list(div.classes)) > 1:
-                class_name = str(list(div.classes)[1])
-                if class_name.startswith('cm_'):
-                    num = re.findall('(\d+)', class_name)
-                    comms_div = div.xpath(self.xpath(div) + "//div[@class='mess']")
-                    comms = []
-                    for comm in comms_div:
-                        # print(comm.text_content().strip())
-                        comms.append(comm.text_content().strip())
-                    comments[int(num[0])] = comms
+            if len(list(div.classes)) <= 1:
+                continue
+
+            class_name = str(list(div.classes)[1])
+            if not class_name.startswith('cm_'):
+                continue
+
+            num = re.findall('(\d+)', class_name)
+            comms_div = div.xpath(self.xpath(div) + "//div[@class='mess']")
+            comms = []
+            for comm in comms_div:
+                comms.append(comm.text_content().strip())
+            comments[int(num[0])] = comms
         return comments
