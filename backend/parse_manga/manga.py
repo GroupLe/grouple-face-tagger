@@ -9,7 +9,7 @@ import web_components.main_page as main_web_components
 import web_components.volumes as volumes_web_components
 
 
-class BasePart:
+class ISerializable:
     def __init__(self, *args, **kwargs):
         raise NotImplemented
 
@@ -17,7 +17,7 @@ class BasePart:
         raise NotImplemented
 
 
-class Page(BasePart):
+class Page(ISerializable):
     def __init__(self, pic_url: str, comments: List):
         self.pic_url = pic_url
         self.comments = comments
@@ -27,7 +27,7 @@ class Page(BasePart):
         return page_json
 
 
-class Volume(BasePart):
+class Volume(ISerializable):
     def __init__(self, pages: List[Page]):
         self.pages = pages
 
@@ -36,16 +36,7 @@ class Volume(BasePart):
         return volume_json
 
 
-
-
-class Manga:
-
-    def __init__(self, url: str):
-        self.info = self._parse(url)
-
-    @classmethod
-    def from_url(cls, url: str):
-        return cls(url)
+class ParseManga:
 
     @staticmethod
     def _parse_main_page(url: str) -> Dict[str, List[str]]:
@@ -93,26 +84,55 @@ class Manga:
 
         return volumes
 
-    def _parse(self, url: str) -> str:
-        main_page = self._parse_main_page(url)
-        volumes = self._parse_volumes(main_page['chapters'])
+    @staticmethod
+    def parse(url: str) -> [str, str, str, List[str], List[str],  List[Dict[str, Volume]]]:
+        main_page = ParseManga._parse_main_page(url)
+        volumes = ParseManga._parse_volumes(main_page['chapters'])
+
+        return url, main_page['title'], main_page['description'],\
+               main_page['reviews'], main_page['comments'], volumes
 
 
-        manga = {'url': url,
-                 'title': main_page['title'],
-                 'description': main_page['description'],
-                 'reviews': main_page['reviews'],
-                 'comments': main_page['comments'],
-                 'volumes': volumes,
-                 'ner_names': None
-                 }
 
-        manga_json = json.dumps(manga)
+class Manga(ISerializable):
 
-        return manga_json
+    def __init__(self, url, title, description, reviews, comments, volumes):
+        self.url = url
+        self.title = title
+        self.description = description
+        self.reviews = reviews
+        self.comments = comments
+        self.volumes = volumes
+        self.ner_names = None
+
+    @classmethod
+    def from_url(cls, url: str):
+        url, title, description, reviews, comments, volumes = ParseManga.parse(url)
+        return cls(url, title, description, reviews, comments, volumes)
+
+    @classmethod
+    def from_json(cls, json_object):
+        manga_info = json.loads(json_object)
+        print(manga_info)
+
+    def to_json(self) -> Dict:
+        volume_json = dict({'url': self.url,
+                            'title': self.title,
+                            'description': self.description,
+                            'reviews': self.reviews,
+                            'volumes': self.volumes,
+                            'ner_names': self.ner_names})
+        return volume_json
+
+    @staticmethod
+    def _get_manga(url: str) -> [str, str, str, List[str], List[str],  List[Dict[str, Volume]]]:
+        return ParseManga.parse(url)
+
 
 
 if __name__ == '__main__':
 
     url = 'https://readmanga.live/buntar_liudvig'
     manga = Manga.from_url(url)
+    manga_json = json.dumps(manga.to_json())
+    Manga.from_json(manga_json)
