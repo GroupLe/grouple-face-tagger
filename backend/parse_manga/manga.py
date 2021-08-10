@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from tqdm import tqdm
-from typing import List, Dict
+from typing import List, Dict, Union
 import json
 from parqser.scrapper import BatchParallelScrapper
 from parqser.parser_ import HTMLParser
@@ -9,7 +9,15 @@ import web_components.main_page as main_web_components
 import web_components.volumes as volumes_web_components
 
 
-class Page:
+class BasePart:
+    def __init__(self, *args, **kwargs):
+        raise NotImplemented
+
+    def to_json(self) -> Dict:
+        raise NotImplemented
+
+
+class Page(BasePart):
     def __init__(self, pic_url: str, comments: List):
         self.pic_url = pic_url
         self.comments = comments
@@ -19,7 +27,7 @@ class Page:
         return page_json
 
 
-class Volume:
+class Volume(BasePart):
     def __init__(self, pages: List[Page]):
         self.pages = pages
 
@@ -33,10 +41,14 @@ class Volume:
 class Manga:
 
     def __init__(self, url: str):
-        self.info = self.from_url(url)
+        self.info = self._parse(url)
+
+    @classmethod
+    def from_url(cls, url: str):
+        return cls(url)
 
     @staticmethod
-    def parse_main_page(url: str) -> Dict[str, List[str]]:
+    def _parse_main_page(url: str) -> Dict[str, List[str]]:
 
         url = [url]
         parser = HTMLParser.from_module(main_web_components)
@@ -53,11 +65,11 @@ class Manga:
         return parsed[0]
 
     @staticmethod
-    def parse_volumes(volumes: List[str]) -> List[Dict[str, Volume]]:
+    def _parse_volumes(volumes_url: List[str]) -> List[Dict[str, Volume]]:
 
         main_url = 'https://readmanga.live'
         urls = []
-        for volume in volumes:
+        for volume in volumes_url:
             urls.append(main_url + volume)
 
         parser = HTMLParser.from_module(volumes_web_components)
@@ -81,11 +93,9 @@ class Manga:
 
         return volumes
 
-
-    @classmethod
-    def from_url(cls, url: str) -> json:
-        main_page = cls.parse_main_page(url)
-        volumes = cls.parse_volumes(main_page['chapters'])
+    def _parse(self, url: str) -> str:
+        main_page = self._parse_main_page(url)
+        volumes = self._parse_volumes(main_page['chapters'])
 
 
         manga = {'url': url,

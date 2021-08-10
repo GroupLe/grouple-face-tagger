@@ -19,10 +19,12 @@ class CommentsPage(BaseComponent):
             if not class_name.startswith('cm_'):
                 continue
 
-            num = re.findall('(\d+)', class_name)
             comms_div = div.xpath(self.xpath(div) + "//div[@class='mess']")
             comms = []
             for comm in comms_div:
                 comms.append(comm.text_content().strip())
+
+            num = re.findall('(\d+)', class_name)
             comments[int(num[0])] = comms
+
         return comments
