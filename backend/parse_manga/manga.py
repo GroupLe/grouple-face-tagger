@@ -17,6 +17,23 @@ class Manga(ISerializable):
         self.comments = comments
         self.volumes = volumes
         self.ner_names = None
+        self.detected_faces = None
+
+    @property
+    def ner_names(self):
+        return self._ner_names
+
+    @ner_names.setter
+    def ner_names(self, names):
+        self._ner_names = names
+
+    @property
+    def detected_faces(self):
+        return self._detected_faces
+
+    @detected_faces.setter
+    def detected_faces(self, faces):
+        self._detected_faces = faces
 
     @classmethod
     def from_url(cls, url: str):
@@ -37,7 +54,8 @@ class Manga(ISerializable):
                             'reviews': self.reviews,
                             'comments': self.comments,
                             'volumes': self.volumes,
-                            'ner_names': self.ner_names})
+                            'ner_names': self.ner_names,
+                            'detected_faces': self.detected_faces})
         return volume_json
 
     @staticmethod
@@ -52,3 +70,10 @@ if __name__ == '__main__':
     manga = Manga.from_url(url)
     manga_json = json.dumps(manga.to_json())
     Manga.from_json(manga_json)
+    print(manga.ner_names)
+    manga.ner_names = ['name1', 'name2']
+    print(manga.ner_names)
+    print(manga.detected_faces)
+    manga.detected_faces = ['face1', 'face2']
+    print(manga.detected_faces)
+
