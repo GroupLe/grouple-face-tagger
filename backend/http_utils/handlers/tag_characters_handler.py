@@ -4,9 +4,8 @@ from webargs.tornadoparser import use_args
 from webargs import fields
 from tornado.web import RequestHandler
 import inject
-from backend.cache import CacheManager
-from backend.entities import Manga
-
+from grouple.backend.cache import CacheManager
+from grouple.backend.entities import Manga
 
 class TagCharactersHandler(RequestHandler):
     @inject.params(cache=CacheManager)
@@ -26,11 +25,11 @@ class TagCharactersHandler(RequestHandler):
 
         comments = self._ner_names(manga['comments'])
 
-    def _download_manga(self, url: str) -> Dict:
-        pass
+    def _download_manga(self, url: str) -> Manga:
+        return Manga.from_url(url)
 
     @inject.params(names_model: NerModel)
-    def _ner_names(self, comments: List[str], names_model=None) -> List[str]:
+    def _ner_names(self, comments: List[str], names_model: NerModel = None) -> List[str]:
         # Makes NER on list of comments. Returns list of names
         names = list(map(names_model.extract_names, comments))
         names = list(chain.from_iterable(names))

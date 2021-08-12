@@ -6,8 +6,8 @@ from parqser.scrapper import BatchParallelScrapper
 from parqser.parser_ import HTMLParser
 import web_components.main_page as main_web_components
 import web_components.volumes as volumes_web_components
-from grouple.backend.parse_manga.page import Page
-from grouple.backend.parse_manga.volume import Volume
+from grouple.backend.entities.page import Page
+from grouple.backend.entities.parse_manga.volume import Volume
 
 
 class ParseManga:
