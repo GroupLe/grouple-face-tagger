@@ -2,8 +2,6 @@ from typing import Optional
 import os
 import hashlib
 from pathlib import Path
-import pickle
-import json
 from collections import deque, defaultdict
 from grouple.backend.entities import Manga, HashUrl
 

@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from typing import List, Dict
 import json
 from pathlib import Path
@@ -83,7 +81,7 @@ if __name__ == '__main__':
     # manga = Manga.from_url(url)
     # manga_json = json.dumps(manga.to_json())
     # print(manga_json)
-    path = Path('C:/may/ML/GroupLe/grouple/data/backend/processed/saved_manga/manga.json')
+    path = Path('C:/may/ML/GroupLe/grouple/data/backend/cache/cachied/manga.json')
     Manga.save(url, path)
     manga = Manga.load(path)
     print(manga)
