@@ -1,5 +1,5 @@
 from typing import Dict, List
-from grouple.backend.entities.i_serializable import ISerializable
+from grouple.backend.parse_manga.i_serializable import ISerializable
 
 
 class Page(ISerializable):

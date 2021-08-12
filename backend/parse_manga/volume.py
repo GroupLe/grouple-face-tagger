@@ -1,6 +1,6 @@
 from typing import Dict, List
-from grouple.backend.entities.i_serializable import ISerializable
-from grouple.backend.entities.page import Page
+from grouple.backend.parse_manga.i_serializable import ISerializable
+from grouple.backend.parse_manga.page import Page
 
 class Volume(ISerializable):
     def __init__(self, pages: List[Page]):
