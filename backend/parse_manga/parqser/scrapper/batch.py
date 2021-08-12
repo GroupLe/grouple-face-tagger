@@ -5,8 +5,8 @@ from time import sleep
 from loguru import logger
 from .base import BaseScrapper
 from .states import DownloadState
-from parqser.session import BaseSession, EmptySession
-from parqser.page.page import LoadedPage
+from grouple.backend.parse_manga.parqser.session import BaseSession, EmptySession
+from grouple.backend.parse_manga.parqser.page.page import LoadedPage
 
 
 class DownloadThread(threading.Thread):

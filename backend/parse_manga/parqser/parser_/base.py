@@ -1,7 +1,7 @@
 from typing import List
 from inspect import getmembers, isclass
-from parqser.page import BasePage
-from parqser.web_component import BaseComponent
+from grouple.backend.parse_manga.parqser.page import BasePage
+from grouple.backend.parse_manga.parqser.web_component import BaseComponent
 
 
 class BaseParser:

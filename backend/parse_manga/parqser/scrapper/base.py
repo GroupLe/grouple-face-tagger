@@ -1,5 +1,5 @@
 from typing import List
-from parqser.page.page import BasePage
+from grouple.backend.parse_manga.parqser.page.page import BasePage
 
 
 class BaseScrapper:

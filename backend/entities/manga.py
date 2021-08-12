@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from typing import List, Dict
 import json
+from pathlib import Path
 from grouple.backend.entities.i_serializable import ISerializable
 from grouple.backend.entities.parse_manga import ParseManga
 from grouple.backend.entities.volume import Volume
@@ -59,6 +60,18 @@ class Manga(ISerializable):
         return volume_json
 
     @staticmethod
+    def save(url: str, path: Path) -> None:
+        manga = Manga.from_url(url)
+        with open(path, 'w') as file:
+            json.dump(manga.to_json(), file)
+
+    @staticmethod
+    def load(path: Path) -> str:
+        with open(path, 'r') as file:
+            manga = json.load(file)
+        return manga
+
+    @staticmethod
     def _get_manga(url: str) -> [str, str, str, List[str], List[str],  List[Dict[str, Volume]]]:
         return ParseManga.parse(url)
 
@@ -67,13 +80,11 @@ class Manga(ISerializable):
 if __name__ == '__main__':
 
     url = 'https://readmanga.live/buntar_liudvig'
-    manga = Manga.from_url(url)
-    manga_json = json.dumps(manga.to_json())
-    Manga.from_json(manga_json)
-    print(manga.ner_names)
-    manga.ner_names = ['name1', 'name2']
-    print(manga.ner_names)
-    print(manga.detected_faces)
-    manga.detected_faces = ['face1', 'face2']
-    print(manga.detected_faces)
+    # manga = Manga.from_url(url)
+    # manga_json = json.dumps(manga.to_json())
+    # print(manga_json)
+    path = Path('C:/may/ML/GroupLe/grouple/data/backend/processed/saved_manga/manga.json')
+    Manga.save(url, path)
+    manga = Manga.load(path)
+    print(manga)
 
