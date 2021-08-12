@@ -1,79 +1,39 @@
-import sys
-sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
-from typing import List, Dict
-import json
-from grouple.backend.entities.i_serializable import ISerializable
-from grouple.backend.entities.parse_manga import ParseManga
-from grouple.backend.entities.volume import Volume
+import pickle
+from pathlib import Path
+import os
+from typing import List, AnyStr, Dict
+from PIL import Image
 
 
-class Manga(ISerializable):
+# TODO: add description
+class Manga:
+    def __init__(self,
+                 raw_data: Dict,
+                 ner_names: List[AnyStr],
+                 faces: List[Image.Image]):
+        self.raw_data = raw_data
+        self.ner_names = ner_names
+        self.faces = faces
 
-    def __init__(self, url, title, description, reviews, comments, volumes):
-        self.url = url
-        self.title = title
-        self.description = description
-        self.reviews = reviews
-        self.comments = comments
-        self.volumes = volumes
-        self.ner_names = None
-        self.detected_faces = None
+    def dump(self, url, path):
+        pickle.dump(url, open(path.joinpath('url.pkl'), 'wb'))
+        pickle.dump(self.raw_data, open(path.joinpath('raw.pkl'), 'wb'))
+        pickle.dump(self.ner_names, open(path.joinpath('ner_names.pkl'), 'wb'))
+        os.mkdir(path.joinpath('faces'))
+        for i, file in enumerate(self.faces):
+            file.save(path.joinpath(f'{i}.png'))
 
-    @property
-    def ner_names(self):
-        return self._ner_names
-
-    @ner_names.setter
-    def ner_names(self, names):
-        self._ner_names = names
-
-    @property
-    def detected_faces(self):
-        return self._detected_faces
-
-    @detected_faces.setter
-    def detected_faces(self, faces):
-        self._detected_faces = faces
+    def to_json(self):
+        return {'recognised': {'names': self.ner_names,
+                               'pics_n': len(self.faces)}}
 
     @classmethod
-    def from_url(cls, url: str):
-        url, title, description, reviews, comments, volumes = ParseManga.parse(url)
-        return cls(url, title, description, reviews, comments, volumes)
-
-    @classmethod
-    def from_json(cls, json_object):
-        manga_info = json.loads(json_object)
-        return cls(manga_info['url'], manga_info['title'],
-                   manga_info['description'], manga_info['reviews'],
-                   manga_info['comments'], manga_info['volumes'])
-
-    def to_json(self) -> Dict:
-        volume_json = dict({'url': self.url,
-                            'title': self.title,
-                            'description': self.description,
-                            'reviews': self.reviews,
-                            'comments': self.comments,
-                            'volumes': self.volumes,
-                            'ner_names': self.ner_names,
-                            'detected_faces': self.detected_faces})
-        return volume_json
-
-    @staticmethod
-    def _get_manga(url: str) -> [str, str, str, List[str], List[str],  List[Dict[str, Volume]]]:
-        return ParseManga.parse(url)
-
-
-
-if __name__ == '__main__':
-
-    url = 'https://readmanga.live/buntar_liudvig'
-    manga = Manga.from_url(url)
-    manga_json = json.dumps(manga.to_json())
-    Manga.from_json(manga_json)
-    print(manga.ner_names)
-    manga.ner_names = ['name1', 'name2']
-    print(manga.ner_names)
-    print(manga.detected_faces)
-    manga.detected_faces = ['face1', 'face2']
-    print(manga.detected_faces)
-
+    def load(cls, path: Path):
+        # url = pickle.load(open(path.joinpath('url.pkl'), 'rb'))
+        raw_data = pickle.load(open(path.joinpath('raw.pkl'), 'rb'))
+        ner_names = pickle.load(open(path.joinpath('ner_names.pkl'), 'rb'))
+        faces = []
+        for file in os.listdir(path.joinpath('faces')):
+            file = Image.open(path.joinpath(f'faces/{file}.png'))
+            faces.append(file)
+        return cls(raw_data, ner_names, faces)
