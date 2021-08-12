@@ -1,6 +1,7 @@
 from typing import Optional
 import os
 import hashlib
+import json
 from pathlib import Path
 from collections import deque, defaultdict
 from grouple.backend.entities import Manga, HashUrl
@@ -26,7 +27,9 @@ class CacheManager:
                 return
 
             path = Path(self.cache_dir, manga)
-            url = Manga.load(path)['url']
+            with open(path, 'r') as file:
+                json_manga = Manga.from_json(file)
+            url = json_manga.url
             self.queue.appendleft(url)
             self.cache_map[url] = manga
 
@@ -35,17 +38,20 @@ class CacheManager:
         hsh = self._get_hash(url)
         path = Path(self.cache_dir, hsh)
         path = Path(str(path) + '.json')
-        Manga.save(url, path)
+
+        manga = Manga.from_url(url)
+        with open(path, 'w') as file:
+            json.dump(manga.to_json(), file)
+
         return hsh
 
     def get(self, url: str) -> Optional[Manga]:
         # None or content
         assert isinstance(url, str)
         manga_hashname = self.cache_map[url]
-
         if manga_hashname is not None:
-            manga = Manga.load(Path(self.cache_dir, manga_hashname))
-
+            with open(Path(self.cache_dir, manga_hashname), 'r') as file:
+                manga = Manga.from_json(file)
             return manga
         else:
             return None
@@ -65,6 +71,5 @@ class CacheManager:
 if __name__ == '__main__':
     cache = CacheManager(Path('C:/may/ML/GroupLe/grouple/data/backend/cache/cachied'))
     url = 'https://readmanga.live/buntar_liudvig'
-    # cache.add(url)
     manga = cache.get(url)
-    print(manga)
+    cache.add(url)

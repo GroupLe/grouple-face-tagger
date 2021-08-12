@@ -19,6 +19,14 @@ class Manga(ISerializable):
         self.detected_faces = None
 
     @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        self._url = url
+
+    @property
     def ner_names(self):
         return self._ner_names
 
@@ -41,7 +49,7 @@ class Manga(ISerializable):
 
     @classmethod
     def from_json(cls, json_object):
-        manga_info = json.loads(json_object)
+        manga_info = json.load(json_object)
         return cls(manga_info['url'], manga_info['title'],
                    manga_info['description'], manga_info['reviews'],
                    manga_info['comments'], manga_info['volumes'])
@@ -58,18 +66,6 @@ class Manga(ISerializable):
         return volume_json
 
     @staticmethod
-    def save(url: str, path: Path) -> None:
-        manga = Manga.from_url(url)
-        with open(path, 'w') as file:
-            json.dump(manga.to_json(), file)
-
-    @staticmethod
-    def load(path: Path) -> str:
-        with open(path, 'r') as file:
-            manga = json.load(file)
-        return manga
-
-    @staticmethod
     def _get_manga(url: str) -> [str, str, str, List[str], List[str],  List[Dict[str, Volume]]]:
         return ParseManga.parse(url)
 
@@ -78,11 +74,6 @@ class Manga(ISerializable):
 if __name__ == '__main__':
 
     url = 'https://readmanga.live/buntar_liudvig'
-    # manga = Manga.from_url(url)
-    # manga_json = json.dumps(manga.to_json())
-    # print(manga_json)
-    path = Path('C:/may/ML/GroupLe/grouple/data/backend/cache/cachied/manga.json')
-    Manga.save(url, path)
-    manga = Manga.load(path)
+    manga = Manga.from_url(url)
     print(manga)
 

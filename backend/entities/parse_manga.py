@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from tqdm import tqdm
 from typing import List, Dict
 from grouple.backend.parse_manga.parqser.scrapper import BatchParallelScrapper

@@ -12,8 +12,6 @@ from grouple.backend.http_utils.handlers.tag_characters_handler import TagCharac
 def make_app(cache):
     args = dict(cache=cache)
     urls = [('/tag_characters', TagCharactersHandler, args)]
-            #('/status', StatusHandler, args),
-            #('/characters', CharactersHandler)]
     return Application(urls)
 
 if __name__ == "__main__":
