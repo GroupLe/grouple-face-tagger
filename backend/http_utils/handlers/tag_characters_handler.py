@@ -25,11 +25,11 @@ class TagCharactersHandler(RequestHandler):
 
         comments = self._ner_names(manga['comments'])
 
-    def _download_manga(self, url: str) -> Dict:
+    def _download_manga(self, url: str) -> Manga:
         return Manga.from_url(url)
 
     @inject.params(names_model: NerModel)
-    def _ner_names(self, comments: List[str], names_model=None) -> List[str]:
+    def _ner_names(self, comments: List[str], names_model: NerModel = None) -> List[str]:
         # Makes NER on list of comments. Returns list of names
         names = list(map(names_model.extract_names, comments))
         names = list(chain.from_iterable(names))
