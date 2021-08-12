@@ -8,6 +8,7 @@ from grouple.backend.cache import CacheManager
 from grouple.backend.entities import Manga
 
 class TagCharactersHandler(RequestHandler):
+
     @inject.params(cache=CacheManager)
     @use_args({'url': fields.Url()}, location='querystring')
     def get(self, reqargs, cache=None):
