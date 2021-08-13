@@ -48,8 +48,8 @@ class Manga(ISerializable):
         return cls(url, title, description, reviews, comments, volumes)
 
     @classmethod
-    def from_json(cls, json_object):
-        manga_info = json.load(json_object)
+    def from_json(cls, json_object: str):
+        manga_info = json.loads(json_object)
         return cls(manga_info['url'], manga_info['title'],
                    manga_info['description'], manga_info['reviews'],
                    manga_info['comments'], manga_info['volumes'])
