@@ -1,5 +1,5 @@
 from tornado.gen import IOLoop
-from tornado.web import Application
+from tornado.web import Application, RequestHandler
 from loguru import logger
 from pathlib import Path
 from grouple.backend.cache import CacheManager
@@ -8,11 +8,17 @@ from grouple.backend.cache import CacheManager
 # from models.face_detection import AnimeFaceDetectionModel
 from grouple.backend.http_utils.handlers.tag_characters_handler import TagCharactersHandler
 
+class MainHandler(RequestHandler):
+    def get(self):
+        self.write({'status': 'ok'})
+
 
 def make_app(cache):
     args = dict(cache=cache)
-    urls = [('/tag_characters', TagCharactersHandler, args)]
+    urls = [(r'/main', MainHandler),
+            ('/tag_characters', TagCharactersHandler, args)]
     return Application(urls)
+
 
 if __name__ == "__main__":
     cache = CacheManager(Path('C:/may/ML/GroupLe/grouple/data/backend/cache/cachied'))

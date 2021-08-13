@@ -9,7 +9,26 @@ from grouple.backend.entities import Manga, HashUrl
 CACHE_SIZE = 100
 
 class CacheManager:
-
+    """
+    Saves limited quantity of Manga objects. In format:
+    hash_of_url/
+        url: ""            - str url of manga
+        title: ""          - manga title
+        description: ""    - manga description on the main page
+        reviews: [""]      - reviews on the main page
+        comments: [""]     - comments on the main page
+        volumes: [[{
+                pic_url: ""      - str url of images per page
+                comments: [""]   - comments under a specific page
+        }]]
+        ner_names: [[  - result of NER on parsed names
+            names: [""] - parsed names per page
+        ]]
+        detected_faces: [[
+                face_pics: ['pics/i.png'] - detected faces per page
+        ]]
+    If cache reloaded, only CACHE_SIZE first items in cache folder will be loaded
+    """
     def __init__(self, path: Path):
         self.cache_dir = path
         existed = os.listdir(self.cache_dir)[:CACHE_SIZE]  # todo fix leak
@@ -50,7 +69,8 @@ class CacheManager:
     def get(self, url: str) -> Optional[Manga]:
         # None or content
         assert isinstance(url, str)
-        manga_hashname = self.cache_map[url] + '.json'
+        manga_hashname = self.cache_map[url]
+
         if manga_hashname is not None:
             with open(Path(self.cache_dir, manga_hashname), 'r') as file:
                 s_file = file.read()
