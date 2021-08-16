@@ -2,12 +2,12 @@ import sys
 sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from tqdm import tqdm
 from typing import List, Dict
-from parqser.scrapper import BatchParallelScrapper
-from parqser.parser_ import HTMLParser
-import web_components.main_page as main_web_components
-import web_components.volumes as volumes_web_components
+from grouple.backend.parse_manga.parqser.scrapper import BatchParallelScrapper
+from grouple.backend.parse_manga.parqser.parser_ import HTMLParser
+import grouple.backend.parse_manga.web_components.main_page as main_web_components
+import grouple.backend.parse_manga.web_components.volumes as volumes_web_components
 from grouple.backend.entities.page import Page
-from grouple.backend.entities.parse_manga.volume import Volume
+from grouple.backend.entities.volume import Volume
 
 
 class ParseManga:

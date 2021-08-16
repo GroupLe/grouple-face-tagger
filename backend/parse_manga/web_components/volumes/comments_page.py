@@ -1,7 +1,7 @@
 from typing import List
 from lxml import html
 import regex as re
-from parqser.web_component import BaseComponent
+from grouple.backend.parse_manga.parqser.web_component import BaseComponent
 
 
 class CommentsPage(BaseComponent):

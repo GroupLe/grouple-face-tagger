@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from parqser.scrapper.states import DownloadState
+from grouple.backend.parse_manga.parqser.scrapper.states import DownloadState
 
 
 class BasePage:

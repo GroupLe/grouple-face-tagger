@@ -1,6 +1,6 @@
 from typing import List
 from lxml import html
-from parqser.web_component import BaseComponent
+from grouple.backend.parse_manga.parqser.web_component import BaseComponent
 
 
 class Reviews(BaseComponent):

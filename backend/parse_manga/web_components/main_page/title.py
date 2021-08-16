@@ -1,5 +1,7 @@
+import sys
+sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from lxml import html
-from parqser.web_component import BaseComponent
+from grouple.backend.parse_manga.parqser.web_component import BaseComponent
 
 
 class Title(BaseComponent):
