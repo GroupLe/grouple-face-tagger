@@ -57,8 +57,8 @@ class LSTMFixedLen(nn.Module):
         """
         cur_word = []
         a = ord('а')
-        chars = [chr(i) for i in range(a, a + 32)]
-        nums = [i + 1 for i in range(0, 33)]
+        chars = [chr(char) for char in range(a, a + 32)]
+        nums = [num + 1 for num in range(0, 33)]
         rus_dict = dict(zip(chars, nums))
         for i in word.lower():
             if i in chars:
