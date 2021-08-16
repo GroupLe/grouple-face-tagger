@@ -27,7 +27,7 @@ class TagCharactersHandler(RequestHandler):
 
         manga.ner_names = self.get_comments(manga)
         self.write({'status': 'ok',
-                    'manga': manga.to_json()})
+                    'ner_names': manga.ner_names})
 
     def get_comments(self, manga: Manga) -> List[List[List[str]]]:
         ner_names = []
