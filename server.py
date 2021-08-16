@@ -7,6 +7,7 @@ from grouple.backend.cache import CacheManager
 # from models.NER import load_names_model
 # from models.face_detection import AnimeFaceDetectionModel
 from grouple.backend.http_utils.handlers.tag_characters_handler import TagCharactersHandler
+from grouple.backend.http_utils.handlers.manga_info_handler import MangaInfoHandler
 
 class MainHandler(RequestHandler):
     def get(self):
@@ -16,6 +17,7 @@ class MainHandler(RequestHandler):
 def make_app(cache):
     args = dict(cache=cache)
     urls = [(r'/main', MainHandler),
+            (r'/manga_info', MangaInfoHandler, args),
             ('/tag_characters', TagCharactersHandler, args)]
     return Application(urls)
 

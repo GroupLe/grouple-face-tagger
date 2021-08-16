@@ -24,6 +24,7 @@ class TagCharactersHandler(RequestHandler):
                         'manga': manga.to_json()})
         else:
             manga = self._download_manga(url)
+            self.cache.add(manga)
 
         #comments = self._ner_names(manga['comments'])
 
