@@ -6,7 +6,7 @@ from grouple.backend.entities.parse_manga import ParseManga
 from grouple.backend.entities.volume import Volume
 
 
-@dataclass()
+@dataclass
 class Manga(ISerializable):
 
     url: str
