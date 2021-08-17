@@ -29,12 +29,13 @@ class TagCharactersHandler(RequestHandler):
             manga.detected_faces = self.get_detected_faces(manga)
             self.cache.add(manga)
 
-        if manga.ner_names is None:
+        if not manga.ner_names:
             manga.ner_names = self.get_ner_names(manga)
             self.cache.add_ner_names(manga.url, manga.ner_names)
 
-        if manga.detected_faces is None:
+        if not manga.detected_faces:
             manga.detected_faces = self.get_detected_faces(manga)
+            self.cache.add_detected_faces(manga.url, manga.detected_faces)
 
         self.write({'status': 'ok',
                     'ner_names': manga.ner_names})
