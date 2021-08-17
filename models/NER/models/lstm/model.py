@@ -57,30 +57,26 @@ class LSTMFixedLen(nn.Module):
         """
         cur_word = []
         a = ord('а')
-        chars = [chr(i) for i in range(a, a + 32)]
-        nums = [i + 1 for i in range(0, 33)]
+        chars = [chr(char) for char in range(a, a + 32)]
+        nums = [num + 1 for num in range(0, 33)]
         rus_dict = dict(zip(chars, nums))
         for i in word.lower():
-            cur_word.append(rus_dict[i])
+            if i in chars:
+                cur_word.append(rus_dict[i])
         while len(cur_word) < self.max_len:
             cur_word.append(1)
         return torch.tensor(cur_word)
 
     def prediction(self, word: str) -> torch.Tensor:
         encoded = self.encode(word)
-        encoded = torch.reshape(encoded, (1, 14))
-        probability = self.forward(encoded)
-        return probability
-
-    def is_name_entity(self, word: str) -> bool:
-        pred = self.prediction(word)
-        return True if pred[0][0] > pred[0][1] else False
+        probability = self.forward(encoded.unsqueeze(0))
+        return probability.detach().numpy().argmax()
 
     def extract_names(self, string: str) -> List[str]:
         names = []
         string = string.split(' ')
         for word in string:
-            if self.is_name_entity(word):
+            if self.prediction(word):
                 names.append(word)
         return names
 

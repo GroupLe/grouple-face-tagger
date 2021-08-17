@@ -18,7 +18,7 @@ def make_app(cache):
     args = dict(cache=cache)
     urls = [(r'/main', MainHandler),
             (r'/manga_info', MangaInfoHandler, args),
-            ('/tag_characters', TagCharactersHandler, args)]
+            (r'/tag_characters', TagCharactersHandler, args)]
     return Application(urls)
 
 

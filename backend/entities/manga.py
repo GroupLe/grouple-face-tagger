@@ -27,6 +27,14 @@ class Manga(ISerializable):
         self._url = url
 
     @property
+    def comments(self):
+        return self._comments
+
+    @comments.setter
+    def comments(self, comments):
+        self._comments = comments
+
+    @property
     def ner_names(self):
         return self._ner_names
 

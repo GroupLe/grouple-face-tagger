@@ -22,12 +22,15 @@ def encode(word: list, max_len: int) -> list:
          Encoded with russian dictionary word
 
     """
+    padding_len = max_len - len(word)
+
     cur_word = []
+    for i in range(padding_len):
+        cur_word.append(0)
+
     rus_dict = create_ris_dict()
     for i in word:
-        cur_word.append(rus_dict[i])
-    while len(cur_word) < max_len:
-        cur_word.append(1)
+        cur_word.append(rus_dict[i.lower()])
     return cur_word
 
 
