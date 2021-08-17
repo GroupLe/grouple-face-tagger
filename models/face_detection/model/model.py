@@ -1,6 +1,7 @@
 from typing import List
 import json
 from loguru import logger
+import os
 from .detector import LFFDDetector, BoundBox
 from .types import Image
 import os
@@ -11,7 +12,7 @@ class AnimeFaceDetectionModel:
         """
         @param margin: detected face area will be enlarged with such number pixels
         """
-        config = json.load(open('../../face_detection/weights/config.json'))
+        config = json.load(open('models/face_detection/weights/config.json'))
         self._detector = LFFDDetector(config, use_gpu=False)
         self.margin = margin
 

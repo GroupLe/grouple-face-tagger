@@ -1,7 +1,7 @@
 {
-    "lffd_config_path": "../../face_detection/weights/lffd.json",
-    "model_path": "../../face_detection/weights/model.params",
-    "symbol_path": "../../face_detection/weights/symbol.json",
+    "lffd_config_path": "models/face_detection/weights/lffd.json",
+    "model_path": "models/face_detection/weights/model.params",
+    "symbol_path": "models/face_detection/weights/symbol.json",
     "detection_parameters": {
         "nms_threshold": 0.3,
         "confidence_threshold": 0.1,
