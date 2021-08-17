@@ -5,6 +5,7 @@ from webargs import fields
 from tornado.web import RequestHandler
 import inject
 import regex as re
+import time
 from grouple.backend.cache import CacheManager
 from grouple.backend.entities import Manga
 from grouple.models.NER.models.lstm.model import LSTMFixedLen as NerModel
@@ -23,20 +24,27 @@ class TagCharactersHandler(RequestHandler):
         manga = self.cache.get(url)
         if manga is None:
             manga = self._download_manga(url)
+            manga.ner_names = self.get_comments(manga)
             self.cache.add(manga)
 
-        manga.ner_names = self.get_comments(manga)
+        if manga.ner_names is None:
+            manga.ner_names = self.get_comments(manga)
+            self.cache.add_ner_names(manga.url, manga.ner_names)
+
         self.write({'status': 'ok',
                     'ner_names': manga.ner_names})
 
+
     def get_comments(self, manga: Manga) -> List[List[List[str]]]:
         ner_names = []
+
         for volume in manga.volumes:
             volume_names = []
             for page in volume['pages']:
                 if page['comments'] != None:
                     volume_names.append(self._ner_names(page['comments'], self.ner_model))
             ner_names.append(volume_names)
+
         return ner_names
 
     def _download_manga(self, url: str) -> Manga:

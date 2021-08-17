@@ -8,15 +8,15 @@ from grouple.backend.entities.volume import Volume
 
 class Manga(ISerializable):
 
-    def __init__(self, url, title, description, reviews, comments, volumes):
+    def __init__(self, url, title, description, reviews, comments, volumes, ner_names = None, detected_faces = None):
         self.url = url
         self.title = title
         self.description = description
         self.reviews = reviews
         self.comments = comments
         self.volumes = volumes
-        self.ner_names = None
-        self.detected_faces = None
+        self.ner_names = ner_names
+        self.detected_faces = detected_faces
 
     @property
     def url(self):
@@ -60,7 +60,8 @@ class Manga(ISerializable):
         manga_info = json.loads(json_object)
         return cls(manga_info['url'], manga_info['title'],
                    manga_info['description'], manga_info['reviews'],
-                   manga_info['comments'], manga_info['volumes'])
+                   manga_info['comments'], manga_info['volumes'],
+                   manga_info['ner_names'], manga_info['detected_faces'])
 
     def to_json(self) -> Dict:
         volume_json = dict({'url': self.url,
@@ -83,5 +84,6 @@ if __name__ == '__main__':
 
     url = 'https://readmanga.live/buntar_liudvig'
     manga = Manga.from_url(url)
-    print(manga)
-
+    print(manga.ner_names)
+    manga.ner_names = ['vse ok']
+    print(manga.ner_names)
