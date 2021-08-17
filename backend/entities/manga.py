@@ -1,22 +1,22 @@
 from typing import List, Dict
 import json
-from pathlib import Path
+from dataclasses import dataclass
 from grouple.backend.entities.i_serializable import ISerializable
 from grouple.backend.entities.parse_manga import ParseManga
 from grouple.backend.entities.volume import Volume
 
 
+@dataclass()
 class Manga(ISerializable):
 
-    def __init__(self, url, title, description, reviews, comments, volumes, ner_names = None, detected_faces = None):
-        self.url = url
-        self.title = title
-        self.description = description
-        self.reviews = reviews
-        self.comments = comments
-        self.volumes = volumes
-        self.ner_names = ner_names
-        self.detected_faces = detected_faces
+    url: str
+    title: str
+    description: str
+    reviews: List[str]
+    comments: List[str]
+    volumes: List[Dict[str, Volume]]
+    ner_names: List[List[str]] = None
+    detected_faces: List[List[str]] = None
 
     @property
     def url(self):
@@ -27,12 +27,52 @@ class Manga(ISerializable):
         self._url = url
 
     @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, title):
+        self._title = title
+
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, title):
+        self._title = title
+
+    @property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        self._description = description
+
+    @property
+    def reviews(self):
+        return self._reviews
+
+    @description.setter
+    def reviews(self, reviews):
+        self._reviews = reviews
+
+    @property
     def comments(self):
         return self._comments
 
     @comments.setter
     def comments(self, comments):
         self._comments = comments
+
+    @property
+    def volumes(self):
+        return self._volumes
+
+    @volumes.setter
+    def volumes(self, volumes):
+        self._volumes = volumes
 
     @property
     def ner_names(self):
