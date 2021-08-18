@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 from typing import List
+import numpy as np
 from collections import deque, defaultdict
 from grouple.backend.entities import Manga, HashUrl
 
@@ -26,7 +27,7 @@ class CacheManager:
             names: [""] - parsed names per page
         ]]
         detected_faces: [[
-                face_pics: ['pics/i.png'] - detected faces per page
+                face_pics: [""] - detected faces per page
         ]]
     If cache reloaded, only CACHE_SIZE first items in cache folder will be loaded
     """
@@ -104,6 +105,19 @@ class CacheManager:
             file.seek(0)
             json.dump(data, file)
             file.truncate()
+
+    def add_detected_faces(self, url: str, detected_faces: List[List[List[np.array]]]):
+        hsh = self._get_hash(url)
+        path = Path(self.cache_dir, hsh)
+        path = Path(str(path) + '.json')
+
+        with open(path, 'r+') as file:
+            data = json.load(file)
+            data['detected_faces'] = detected_faces
+            file.seek(0)
+            json.dump(data, file)
+            file.truncate()
+
 
 
 
