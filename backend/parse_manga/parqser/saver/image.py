@@ -17,9 +17,9 @@ class ImageSaver(BaseSaver):
     def save_batch(self, params: List[Dict[str, Any]]):
         if len(params) == 0:
             raise AttributeError('Records batch shouldnt be empty')
-        characters = params[0]
+        parameters = params[0]
 
-        for name in characters['characters'][0]:
+        for name in parameters['characters'][0]:
             with open(Path(self.path, name + '.jpg'), 'wb') as f:
-                pic = r.get(characters['characters'][0][name]).content
+                pic = r.get(parameters['characters'][0][name]).content
                 f.write(pic)

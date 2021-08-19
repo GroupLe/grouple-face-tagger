@@ -6,7 +6,7 @@ sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
 from grouple.backend.parse_manga.parqser.web_component import BaseComponent
 
 
-class Characters(BaseComponent):
+class CharactersComponent(BaseComponent):
     def parse(self, source: str) ->List[Dict[str, str]]:
         etree = html.fromstring(source)
         path = "//div[@class='inner']/a/img"
