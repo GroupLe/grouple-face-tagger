@@ -96,7 +96,8 @@ class TagCharactersHandler(RequestHandler):
         root = '../../../data/backend/characters'
         faces = []
         for character in os.listdir(root):
-            if character[:-4].lower().find(name.lower()) != -1:
+            character_name = character[:-4].lower()  # drop file extension
+            if character_name.find(name.lower()) != -1:  # looking for a name substring
                 img = np.asarray(Image.open(root + '/' + character).convert('RGB'))
                 faces.append(img)
         return faces
