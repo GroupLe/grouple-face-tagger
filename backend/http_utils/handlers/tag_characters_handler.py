@@ -87,3 +87,8 @@ class TagCharactersHandler(RequestHandler):
 
         return final_names
 
+    def get_faces_from_name(self, name: str) -> List[np.array]:
+        pass
+
+
+
