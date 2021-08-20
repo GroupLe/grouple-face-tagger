@@ -2,8 +2,7 @@ from lxml import html
 import sys
 import requests as r
 from typing import List, Dict
-sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
-from grouple.backend.parse_manga.parqser.web_component import BaseComponent
+from parqser.web_component import BaseComponent
 
 
 class CharactersComponent(BaseComponent):

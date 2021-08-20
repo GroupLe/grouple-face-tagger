@@ -1,5 +1,5 @@
 from lxml import html
-from grouple.backend.parse_manga.parqser.web_component import BaseComponent
+from parqser.web_component import BaseComponent
 
 
 class Description(BaseComponent):

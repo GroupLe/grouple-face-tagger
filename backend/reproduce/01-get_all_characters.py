@@ -1,9 +1,7 @@
-import sys
-sys.path.insert(0, 'C:/may/ML/GroupLe/grouple/backend/parse_manga/parqser')
-from grouple.backend.parse_manga.parqser.saver.image import ImageSaver
+from grouple.backend.parse_manga.image import ImageSaver
 from grouple.backend.parse_manga.web_components.characters.characters import CharactersComponent
-from grouple.backend.parse_manga.parqser.parser_.html import HTMLParser
-from grouple.backend.parse_manga.parqser.scrapper.batch import BatchParallelScrapper
+from parqser.parser.html_parser import HTMLParser
+from parqser.scrapper.batch_parallel_scrapper import BatchParallelScrapper
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List
 from itertools import chain
 from tornado.web import RequestHandler
 import inject
@@ -8,7 +8,6 @@ import cv2
 import os
 import numpy as np
 from tqdm import tqdm
-from pathlib import Path
 from PIL import Image
 from grouple.backend.entities import Manga
 from grouple.models.NER.models.lstm.model import LSTMFixedLen as NerModel

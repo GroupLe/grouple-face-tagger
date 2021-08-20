@@ -1,10 +1,7 @@
-from typing import Dict, Any, List, Union
-import os
-import csv
+from typing import Dict, Any, List
 import requests as r
 from pathlib import Path
-from loguru import logger
-from .base import BaseSaver
+from parqser.saver.base_saver import BaseSaver
 
 
 class ImageSaver(BaseSaver):
@@ -19,7 +16,7 @@ class ImageSaver(BaseSaver):
             raise AttributeError('Records batch shouldnt be empty')
         parameters = params[0]
 
-        for name in parameters['characters'][0]:
+        for name in parameters['characters_component'][0]:
             with open(Path(self.path, name + '.jpg'), 'wb') as f:
-                pic = r.get(parameters['characters'][0][name]).content
+                pic = r.get(parameters['characters_component'][0][name]).content
                 f.write(pic)
