@@ -5,7 +5,10 @@ import inject
 import regex as re
 import requests as r
 import cv2
+import os
 import numpy as np
+from pathlib import Path
+from PIL import Image
 from grouple.backend.entities import Manga
 from grouple.models.NER.models.lstm.model import LSTMFixedLen as NerModel
 from grouple.models.face_detection.model import AnimeFaceDetectionModel
@@ -72,8 +75,9 @@ class TagCharactersHandler(RequestHandler):
     def _download_manga(self, url: str) -> Manga:
         return Manga.from_url(url)
 
+    @staticmethod
     @inject.params(ner_model=NerModel)
-    def _ner_names(self, comments: List[str], ner_model: NerModel = None) -> List[str]:
+    def _ner_names(comments: List[str], ner_model: NerModel = None) -> List[str]:
         # Makes NER on list of comments. Returns list of names
         names = list(map(ner_model.extract_names, comments))
         names = list(chain.from_iterable(names))
@@ -87,3 +91,13 @@ class TagCharactersHandler(RequestHandler):
 
         return final_names
 
+    @staticmethod
+    def get_faces_from_name(name: str) -> List[np.array]:
+        root = '../../../data/backend/characters'
+        faces = []
+        for character in os.listdir(root):
+            character_name = character[:-4].lower()  # drop file extension
+            if character_name.find(name.lower()) != -1:  # looking for a name substring
+                img = np.asarray(Image.open(root + '/' + character).convert('RGB'))
+                faces.append(img)
+        return faces
