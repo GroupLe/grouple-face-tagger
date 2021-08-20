@@ -26,7 +26,8 @@ class AnimeFaceDetectionModel:
 
     def _fetch_box(self, img: Image, bbox: BoundBox) -> Image:
         """Enlarges boundbox with margin pixels, crops bounded image"""
-        h, w, _ = img.shape
+        h = img.shape[0]
+        w = img.shape[1]
         byx = int(max(0, bbox.xmin - self.margin))
         tox = int(min(w, bbox.xmax + self.margin))
         byy = int(max(0, bbox.ymin - self.margin))

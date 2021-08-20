@@ -45,7 +45,8 @@ class LFFDDetector(object):
 
     def detect(self, image: Image) -> List[BoundBox]:
         """Detect objects from the given BGR image (numpy array)"""
-        h, w, _ = image.shape
+        h = image.shape[0]
+        w = image.shape[1]
         resize_scale = min((self.params['size'] / max(h, w)), 1)
         bboxes, _ = self.predictor.predict(
             image,
