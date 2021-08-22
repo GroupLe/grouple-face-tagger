@@ -1,8 +1,8 @@
 from lxml import html
-from grouple.backend.parse_manga.parqser.web_component import BaseComponent
+from parqser.web_component import BaseComponent
 
 
-class Description(BaseComponent):
+class DescriptionComponent(BaseComponent):
     def parse(self, source: str) -> str:
         etree = html.fromstring(source).xpath("//div[@class='leftContent']")[0]
         text = etree.xpath(self.xpath(etree) + "/div[@class='expandable']/div")[1]

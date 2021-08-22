@@ -3,9 +3,6 @@ from tornado.web import Application, RequestHandler
 from loguru import logger
 from pathlib import Path
 from grouple.backend.cache import CacheManager
-# from models.manga_downloader import Downloader, PicDownloader
-# from models.NER import load_names_model
-# from models.face_detection import AnimeFaceDetectionModel
 from grouple.backend.http_utils.handlers.tag_characters_handler import TagCharactersHandler
 from grouple.backend.http_utils.handlers.manga_info_handler import MangaInfoHandler
 

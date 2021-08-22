@@ -1,10 +1,10 @@
 from typing import List
 from lxml import html
 import regex as re
-from grouple.backend.parse_manga.parqser.web_component import BaseComponent
+from parqser.web_component import BaseComponent
 
 
-class CommentsPage(BaseComponent):
+class CommentsPageComponent(BaseComponent):
     def parse(self, source: str) -> List[str]:
 
         comments = {}

@@ -1,8 +1,8 @@
 from lxml import html
-from grouple.backend.parse_manga.parqser.web_component import BaseComponent
+from parqser.web_component import BaseComponent
 
 
-class MangaType(BaseComponent):
+class MangaTypeComponent(BaseComponent):
     def parse(self, source: str) -> str:
         etree = html.fromstring(source).xpath("//div[@class='leftContent']")[0]
         manga_type = etree.xpath(self.xpath(etree) + "/h1[@class='names']")[0]

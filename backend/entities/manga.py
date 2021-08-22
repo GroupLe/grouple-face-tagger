@@ -35,14 +35,6 @@ class Manga(ISerializable):
         self._title = title
 
     @property
-    def title(self):
-        return self._title
-
-    @title.setter
-    def title(self, title):
-        self._title = title
-
-    @property
     def description(self):
         return self._description
 
@@ -54,7 +46,7 @@ class Manga(ISerializable):
     def reviews(self):
         return self._reviews
 
-    @description.setter
+    @reviews.setter
     def reviews(self, reviews):
         self._reviews = reviews
 
@@ -104,6 +96,7 @@ class Manga(ISerializable):
                    manga_info['ner_names'], manga_info['detected_faces'])
 
     def to_json(self) -> Dict:
+
         volume_json = dict({'url': self.url,
                             'title': self.title,
                             'description': self.description,

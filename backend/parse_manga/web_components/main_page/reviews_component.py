@@ -1,9 +1,9 @@
 from typing import List
 from lxml import html
-from grouple.backend.parse_manga.parqser.web_component import BaseComponent
+from parqser.web_component import BaseComponent
 
 
-class Reviews(BaseComponent):
+class ReviewsComponent(BaseComponent):
     def parse(self, source: str) -> List[str]:
         etree = html.fromstring(source).xpath("//div[@class='leftContent']")[0]
 
