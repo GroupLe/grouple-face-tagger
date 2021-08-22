@@ -3,7 +3,7 @@ from lxml import html
 from parqser.web_component import BaseComponent
 
 
-class Chapters(BaseComponent):
+class ChaptersComponent(BaseComponent):
     def parse(self, source: str) -> List[str]:
         etree = html.fromstring(source).xpath("//div[@class='leftContent']")[0]
 

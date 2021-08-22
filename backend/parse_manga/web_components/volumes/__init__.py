@@ -1,2 +1,2 @@
-from .pics import Pics
-from .comments_page import CommentsPage
+from .pics_component import PicsComponent
+from .comments_page_component import CommentsPageComponent

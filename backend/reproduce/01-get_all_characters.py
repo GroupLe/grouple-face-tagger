@@ -1,5 +1,5 @@
-from grouple.backend.parse_manga.image import ImageSaver
-from grouple.backend.parse_manga.web_components.characters.characters import CharactersComponent
+from grouple.backend.parse_manga.image_saver import ImageSaver
+from grouple.backend.parse_manga.web_components.characters.characters_component import CharactersComponent
 from parqser.parser.html_parser import HTMLParser
 from parqser.scrapper.batch_parallel_scrapper import BatchParallelScrapper
 

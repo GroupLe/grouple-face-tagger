@@ -4,7 +4,7 @@ import regex as re
 from parqser.web_component import BaseComponent
 
 
-class CommentsPage(BaseComponent):
+class CommentsPageComponent(BaseComponent):
     def parse(self, source: str) -> List[str]:
 
         comments = {}

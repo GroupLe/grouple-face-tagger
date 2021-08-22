@@ -2,7 +2,7 @@ from typing import List
 from parqser.web_component import BaseComponent
 
 
-class Pics(BaseComponent):
+class PicsComponent(BaseComponent):
 
     @staticmethod
     def _get_links_substr(page_str: str) -> str:

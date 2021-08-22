@@ -59,7 +59,7 @@ class TagCharactersHandler(RequestHandler):
 
         return ner_names
 
-    def get_detected_faces(self, manga: Manga) -> List[List[List[List[int]]]]:
+    def get_detected_faces(self, manga: Manga) -> List[List[List[int]]]:
         detected_faces = []
 
         for volume in tqdm(manga.volumes):
@@ -68,7 +68,6 @@ class TagCharactersHandler(RequestHandler):
                 if page['pic_url'] != None:
                     pic = r.get(page['pic_url']).content
                     decoded_pic = cv2.imdecode(np.frombuffer(pic, np.uint8), -1)
-                    print(decoded_pic.shape)
 
                     if len(decoded_pic.shape) == 2:
                         decoded_pic.resize(decoded_pic.shape[0], decoded_pic.shape[1], 1)
